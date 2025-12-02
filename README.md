@@ -51,10 +51,14 @@ These files will be:
 - TestNewWorldApplications.json
 - TestOldWorldApplications.json
 
-These correspond to your inputs, but will now have the status history entries added to each claim/application as appropriate
+These correspond to your inputs, but will now have the status history entries added to each claim/application as appropriate.
+
 You will also have a file called:
 
 - TestUnmatchedStatusHistoryEntries.json
   
 Which contains a list of any status history entries that could not be matched to a claim or application during the migration process.
-This is for validation purposes and should be empty for production
+This is for validation purposes and should be empty for production.
+
+There will also be data output to your console which will detail any claims or applications that did not have any history to attach
+(this should be extremely minimal for production)
