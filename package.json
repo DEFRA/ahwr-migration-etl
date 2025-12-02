@@ -1,0 +1,33 @@
+{
+    "name": "ahwr-migration-etl",
+    "version": "0.0.1",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "NODE_ENV=production node -r dotenv/config --use-strict .",
+        "test": "jest --runInBand"
+    },
+    "author": "AHWR",
+    "license": "ISC",
+    "engines": {
+        "node": ">=22",
+        "npm": ">=10"
+    },
+    "devDependencies": {
+        "commitizen": "^4.2.4",
+        "husky": "^7.0.4",
+        "nyc": "^15.1.0",
+        "prettier": "2.4.1"
+    },
+    "dependencies": {
+        "csv": "^6.2.8",
+        "dotenv": "^10.0.0",
+        "extract-zip": "^2.0.1",
+        "lodash": "^4.17.21",
+        "luxon": "^3.4.4",
+        "mssql": "^7.2.1",
+        "node-fetch": "^2.6.7",
+        "sax": "^1.2.4",
+        "xml-js": "^1.6.11"
+    }
+}
