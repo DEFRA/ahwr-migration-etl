@@ -50,17 +50,6 @@ export async function loadAndCombineCsvAndJson(filePath) {
         }
     });
 
-    // const {
-    //     default: {
-    //         name,
-    //         version
-    //     }
-    // } = await import("../../package.json", {
-    //     assert: {
-    //         type: "json"
-    //     }
-    // });
-
     //merge claims and status history
     const mergedClaims = nwClaims.default.map((claim) => blendStatusHistory(statusHistory, claim));
 
