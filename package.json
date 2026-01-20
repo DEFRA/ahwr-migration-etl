@@ -4,7 +4,7 @@
     "main": "src/index.js",
     "type": "module",
     "scripts": {
-        "start": "NODE_ENV=production node -r dotenv/config --use-strict .",
+        "start": "node -r dotenv/config --use-strict .",
         "test": "jest --runInBand"
     },
     "author": "AHWR",
