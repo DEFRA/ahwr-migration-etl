@@ -252,7 +252,6 @@ const nwDataPresence = db.applications.aggregate([
     }
   }
 ]).toArray()[0];
-console.log(nwDataPresence)
 
 const owDataPresence = db.owapplications.aggregate([
   {
