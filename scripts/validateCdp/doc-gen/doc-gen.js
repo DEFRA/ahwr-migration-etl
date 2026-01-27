@@ -83,7 +83,7 @@ const stats = db.documentlog.aggregate([
 
 const bigString = db.documentlog.aggregate([
   {
-    // Only ensure legacyId exists so ordering is deterministic
+    // Ensure legacyId exists
     $match: {
       "legacyData.legacyId": { $exists: true, $ne: null }
     }
@@ -95,32 +95,19 @@ const bigString = db.documentlog.aggregate([
     }
   },
   {
-    // Build "legacyId|emailReference"
-    // emailReference becomes empty string if missing
-    $project: {
-      combined: {
-        $concat: [
-          "$legacyData.legacyId",
-          "|",
-          { $ifNull: ["$legacyData.emailReference", ""] }
-        ]
-      }
-    }
-  },
-  {
-    // Collect in sorted order
+    // Collect legacyIds in order
     $group: {
       _id: null,
-      values: { $push: "$combined" }
+      legacyIds: { $push: "$legacyData.legacyId" }
     }
   },
   {
-    // Join all entries with '|'
+    // Join with '|'
     $project: {
       _id: 0,
-      concatenatedValues: {
+      concatenatedLegacyIds: {
         $reduce: {
-          input: "$values",
+          input: "$legacyIds",
           initialValue: "",
           in: {
             $cond: [
@@ -133,12 +120,58 @@ const bigString = db.documentlog.aggregate([
       }
     }
   }
-]).toArray()[0]?.concatenatedValues ?? '';
+]).toArray()[0]?.concatenatedLegacyIds ?? '';
 
-const hash = crypto
-      .createHash("md5")
-      .update(bigString, "utf8")
-      .digest("hex");
+const idHash = crypto
+  .createHash("md5")
+  .update(bigString, "utf8")
+  .digest("hex");
+
+const bigString2 = db.documentlog.aggregate([
+  {
+    // Ensure legacyId exists
+    $match: {
+      "legacyData.emailReference": { $exists: true, $ne: null }
+    }
+  },
+  {
+    // Deterministic order
+    $sort: {
+      "legacyData.emailReference": 1
+    }
+  },
+  {
+    // Collect legacyIds in order
+    $group: {
+      _id: null,
+      legacyRefs: { $push: "$legacyData.emailReference" }
+    }
+  },
+  {
+    // Join with '|'
+    $project: {
+      _id: 0,
+      concatenatedLegacyRefs: {
+        $reduce: {
+          input: "$legacyRefs",
+          initialValue: "",
+          in: {
+            $cond: [
+              { $eq: ["$$value", ""] },
+              "$$this",
+              { $concat: ["$$value", "|", "$$this"] }
+            ]
+          }
+        }
+      }
+    }
+  }
+]).toArray()[0]?.concatenatedLegacyRefs ?? '';
+
+const refHash = crypto
+  .createHash("md5")
+  .update(bigString2, "utf8")
+  .digest("hex");
 
 
 
@@ -157,5 +190,6 @@ console.log(JSON.stringify(
       lowest_sbi: dates.lowest_sbi,
       highest_sbi: dates.highest_sbi,
       count_legacy_completed: stats.count_legacy_completed,
-      all_legacy_field_md5: hash
+      all_legacy_id_md5: idHash,
+      all_legacy_ref_md5: refHash
     }, null, 2));

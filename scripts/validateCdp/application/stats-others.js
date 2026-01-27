@@ -98,6 +98,6 @@ console.log(db.claims.aggregate([
     }
   },
   {
-    $sort: { claims_count: -1 }
+    $sort: { claims_count: -1, id: -1 }
   }
 ]));

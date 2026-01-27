@@ -14,13 +14,20 @@ WITH doc_stats AS (
             'lowest_sbi', min("sbi"),
             'highest_sbi', max("sbi"),
             'count_legacy_completed', COUNT(*) FILTER (WHERE "completed" IS NOT NULL),
-            'all_legacy_field_md5', (SELECT
+            'all_legacy_id_md5', (SELECT
                               md5(
                                 string_agg(
-                                  concat_ws('|', id, "emailReference"),
+                                  concat_ws('|', id"),
                                   '|' ORDER BY id
                                 )
-                              ) FROM document_log)
+                              ) FROM document_log),
+            'all_legacy_ref_md5', (SELECT
+                              md5(
+                                string_agg(
+                                  concat_ws('|', "emailReference"),
+                                  '|' ORDER BY "emailReference"
+                                )
+                              ) FROM document_log where "emailReference" IS NOT NULL)
         ) AS doc_metrics
     FROM document_log
 )

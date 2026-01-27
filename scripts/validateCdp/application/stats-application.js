@@ -194,7 +194,7 @@ console.log(JSON.stringify(
         max: owDates.max_len,
         avg: owDates.avg_len
       },
-      invalid_update_date: nwInvalidDate,
+      invalid_update_date: owInvalidDate,
       claimed: {
         true: owStats.no_of_applications_claimed_true,
         false: owStats.no_of_applications_claimed_false

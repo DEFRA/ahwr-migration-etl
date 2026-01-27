@@ -71,4 +71,5 @@ FROM (
     FROM claim c
     WHERE c.data ? 'herdId'
     GROUP BY c.data->>'herdId', (c.data->>'herdVersion')::int
+    ORDER BY claims_count DESC, id DESC
 ) cc;

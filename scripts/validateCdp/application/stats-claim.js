@@ -13,7 +13,7 @@ const duplicates = db.claims.aggregate([
 ]).toArray().length;
 
 
-const dates = db.applications.aggregate([
+const dates = db.claims.aggregate([
   {
     $group: {
       _id: null,
@@ -45,7 +45,7 @@ const dates = db.applications.aggregate([
 ]).toArray()[0];
 
 
-const invalidDate = db.applications.find({
+const invalidDate = db.claims.find({
   $expr: {
     $and: [
       { $eq: [{ $type: "$updatedAt" }, "date"] },
