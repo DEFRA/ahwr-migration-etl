@@ -17,7 +17,7 @@ WITH doc_stats AS (
             'all_legacy_id_md5', (SELECT
                               md5(
                                 string_agg(
-                                  concat_ws('|', id"),
+                                  concat_ws('|', id),
                                   '|' ORDER BY id
                                 )
                               ) FROM document_log),
