@@ -66,5 +66,6 @@ SELECT
     jsonb_strip_nulls(jsonb_build_object('legacyId', id)) AS "legacyData",
     "templateId",
     status,
+    true as "migratedRecord",
     jsonb_strip_nulls(d3) AS data
 FROM step3) z;

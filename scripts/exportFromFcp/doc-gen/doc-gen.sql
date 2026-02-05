@@ -11,6 +11,7 @@ select json_agg(z) from
             ) AS "legacyData",
             d."fileName",
             d.status,
+            true as "migratedRecord",
             jsonb_strip_nulls(
                     d.data
             ) AS "inputData"

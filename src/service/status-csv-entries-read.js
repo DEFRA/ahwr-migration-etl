@@ -65,7 +65,7 @@ export async function loadAndCombineCsvAndJson(filePath) {
 
     await writeOutputToJsonFile(mergedOWApps, `output/${originalEnvName}/${envName}OldWorldApplications.json`);
 
-    const unJasonedHerds = herds.default.map((h) =>  ({ ...h.jason }));
+    const unJasonedHerds = herds.default.map((h) =>  ({ ...h.jason, migratedRecord: true}));
 
     await writeOutputToJsonFile(unJasonedHerds, `output/${originalEnvName}/${envName}Herds.json`);
 
@@ -75,10 +75,14 @@ export async function loadAndCombineCsvAndJson(filePath) {
 }
 
 async function reportNoMatches(originalEnvName, envName, statusHistory, originalLength, mergedClaims, mergedNWApps, mergedOWApps) {
-    //report any entries in status history that did not match any of the above, as these are dead entries
-    if(statusHistory.length) {
-        console.log(`There are ${statusHistory.length} entries of ${originalLength} in the status history that did not match any claim or application!`);
-        await writeOutputToJsonFile(statusHistory, `output/${originalEnvName}/${envName}UnmatchedStatusHistoryEntries.json`);
+    //report any entries in status history that did not match any of the above, as these are dead entries, unless in list of
+    //ones we know have been deleted and thus won;t be there to attach history to
+    const knownDeleted = ["AHWR-D43C-4392","FUBC-5C61-NYL5","FUBC-7TQT-LVZ3","FUBC-F21C-69E1","FUDC-4D7S-RTYL","FUSH-F385-8AF9","REBC-NUI5-IUMD"
+    ,"REBC-Q5N3-DBWM","REBC-USH6-3Z9Q","REPI-8HVB-NX2W","REPI-E379-157C","RESH-CA19-FE26","RESH-HZU8-YU55"]
+    const statusHistoryWithoutKnownDeleted = statusHistory.filter((sh) => !knownDeleted.includes(sh.reference));
+    if(statusHistoryWithoutKnownDeleted.length) {
+        console.log(`There are ${statusHistoryWithoutKnownDeleted.length} entries of ${originalLength} in the status history that did not match any claim or application!`);
+        await writeOutputToJsonFile(statusHistoryWithoutKnownDeleted, `output/${originalEnvName}/${envName}UnmatchedStatusHistoryEntries.json`);
     }
 
     const claimsWithNoHistory = mergedClaims.filter((c) => !c.statusHistory.length);
@@ -115,7 +119,8 @@ function blendStatusHistory(statusHistory, hr) {
     }
     return {
         ...hr,
-        statusHistory: match ? match.statusHistory : []
+        statusHistory: match ? match.statusHistory : [],
+        migratedRecord: true
     }
 }
 
